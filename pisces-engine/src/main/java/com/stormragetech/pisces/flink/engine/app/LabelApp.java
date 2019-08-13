@@ -27,19 +27,18 @@ public class LabelApp {
 
         DataStreamSource<Integer> source = env.addSource(new DynamicDataSource());
 
-        label.forEach(s -> source.map((MapFunction<Integer, String>) integer -> {
-            final String[] result = {"null"};
-            if (s.equals(integer)) {
-                result[0] = "a" + integer + " || " + s;
-            }
-            return result[0];
-        }).filter((FilterFunction<String>) s1 -> {
-            if (s1.equals("null")) {
-                return false;
-            } else {
-                return true;
-            }
-        }).print());
+        final int[] i = {1};
+        label.forEach(s -> {
+            source.map((MapFunction<Integer, String>) integer -> {
+                final String[] result = {"null"};
+                if (s.equals(integer)) {
+                    result[0] = "a" + integer + " || " + s;
+                }
+                return result[0];
+            }).filter((FilterFunction<String>) s1 -> !s1.equals("null")).print();
+            System.out.println("[ foreach ] " + i[0]);
+            i[0]++;
+        });
 
 //        source.map((MapFunction<Integer, String>) integer -> {
 //            final String[] result = {"null"};
