@@ -3,8 +3,8 @@ package com.stormragetech.pisces.flink.engine.app;
 import org.apache.flink.api.common.state.BroadcastState;
 import org.apache.flink.api.common.state.MapStateDescriptor;
 import org.apache.flink.api.common.typeinfo.BasicTypeInfo;
-import org.apache.flink.configuration.Configuration;
 import org.apache.flink.runtime.state.HeapBroadcastState;
+import org.apache.flink.streaming.api.CheckpointingMode;
 import org.apache.flink.streaming.api.TimeCharacteristic;
 import org.apache.flink.streaming.api.datastream.BroadcastStream;
 import org.apache.flink.streaming.api.datastream.DataStream;
@@ -16,12 +16,17 @@ import org.apache.flink.util.Collector;
 import java.util.Iterator;
 import java.util.Map;
 
-public class Launch {
+public class DemoLaunch {
 
     public static void main(String[] args) {
 
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
         env.setParallelism(4);
+        env.enableCheckpointing(5000);
+        env.getCheckpointConfig().setCheckpointingMode(CheckpointingMode.EXACTLY_ONCE);
+        env.getCheckpointConfig().setCheckpointTimeout(60000);
+        env.getCheckpointConfig().setMinPauseBetweenCheckpoints(1);
+        env.getCheckpointConfig().setMaxConcurrentCheckpoints(1);
         env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime);
 
         final MapStateDescriptor<String, String> CONFIG_DESCRIPTOR = new MapStateDescriptor<>(
@@ -32,7 +37,7 @@ public class Launch {
 
 //        DataStreamSource<String> source1 = env.readTextFile("/Users/marshall/Desktop/a.txt");
         BroadcastStream<String> broadcastStream = env
-                .readTextFile("/Users/marshall/Desktop/a.txt")
+                .readTextFile("/Users/marshall/Desktop/b.txt")
                 .setParallelism(1)
                 .broadcast(CONFIG_DESCRIPTOR);
 
@@ -42,13 +47,12 @@ public class Launch {
 //            e.printStackTrace();
 //        }
 
-        DataStreamSource<String> source2 = env.readTextFile("/Users/marshall/Desktop/b.txt");
+        DataStreamSource<Integer> source2 = env.addSource(new DynamicDataSource());
+//        DataStreamSource<String> source2 = env.readTextFile("/Users/marshall/Desktop/b.txt");
 //        source2.print("source2 >>> ");
 
         DataStream<String> result = source2.connect(broadcastStream)
-                .process(new BroadcastProcessFunction<String, String, String>() {
-
-                    private String label = null;
+                .process(new BroadcastProcessFunction<Integer, String, String>() {
 
 //                    @Override
 //                    public void open(Configuration parameters) throws Exception {
@@ -58,7 +62,7 @@ public class Launch {
 //                    }
 
                     @Override
-                    public void processElement(String s, ReadOnlyContext readOnlyContext, Collector<String> collector) throws Exception {
+                    public void processElement(Integer s, ReadOnlyContext readOnlyContext, Collector<String> collector) throws Exception {
 
 //                        System.out.println("process : " + s + " == " + label);
 
@@ -73,8 +77,8 @@ public class Launch {
                         while (iterator.hasNext()) {
                             String result = "null";
                             Map.Entry<String, String> entry = iterator.next();
-//                            System.out.println(s + " ^^ " + entry.getValue() + " ^^ " + s.startsWith(entry.getValue()));
-                            if (null != entry.getValue() && s.startsWith(entry.getValue())) {
+                            System.out.println(s + " ^^ " + entry.getValue() + " ^^ " + entry.getKey().startsWith(String.valueOf(s)));
+                            if (null != entry.getValue() && entry.getKey().startsWith(String.valueOf(s))) {
                                 result = s + " || " + entry.getValue();
                             }
                             if (!result.equals("null")) {
