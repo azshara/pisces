@@ -28,6 +28,9 @@
         <log4j2.version>1.5.2</log4j2.version>
         <kafka.version>2.3.0</kafka.version>
         <flinkKafka.version>1.8.1</flinkKafka.version>
+        <QLExpress.version>3.2.0</QLExpress.version>
+        <lombok.version>1.18.6</lombok.version>
+        <fastjson.version>1.2.51</fastjson.version>
     </properties>
 
     <dependencyManagement>
@@ -70,7 +73,24 @@
                 <version>${flink.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>QLExpress</artifactId>
+                <version>${QLExpress.version}</version>
+            </dependency>
+
             <!-- Sritsoft dependencies -->
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${lombok.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>fastjson</artifactId>
+                <version>${fastjson.version}</version>
+            </dependency>
+
             <dependency>
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
