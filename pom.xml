@@ -23,7 +23,7 @@
         <log4j.version>1.2.17</log4j.version>
         <scala.binary.version>2.11</scala.binary.version>
         <lombok.version>1.18.8</lombok.version>
-        <fastjson.version>1.2.58</fastjson.version>
+        <fastjson.version>1.2.83</fastjson.version>
         <mysql.version>5.1.4</mysql.version>
         <log4j2.version>1.5.2</log4j2.version>
         <kafka.version>2.3.0</kafka.version>
