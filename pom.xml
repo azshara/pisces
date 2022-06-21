@@ -24,7 +24,7 @@
         <scala.binary.version>2.11</scala.binary.version>
         <lombok.version>1.18.8</lombok.version>
         <fastjson.version>1.2.58</fastjson.version>
-        <mysql.version>5.1.4</mysql.version>
+        <mysql.version>8.0.28</mysql.version>
         <log4j2.version>1.5.2</log4j2.version>
         <kafka.version>2.3.0</kafka.version>
         <flinkKafka.version>1.8.1</flinkKafka.version>
